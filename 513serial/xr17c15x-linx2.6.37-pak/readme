@@ -1,0 +1,116 @@
+=============================================================================
+
+        EXAR Multiport Device Driver Ver 4.7 Installation Guide
+         for Linux Kernel 2.6.37 (Tested with openSuse 11.4)
+			Copyright (C) 2011, EXAR.
+=============================================================================
+Content
+
+1. Introduction
+2. System Requirement
+3. Installation
+4. Troubleshooting
+
+-----------------------------------------------------------------------------
+1. Introduction
+
+   The Multiport serial driver Ver. 4.7, supports following multiport
+   boards.
+
+      - XR17C158 & XR17D158 PCI Multiport (8 Channels) Boards
+      - XR17C154 & XR17D154 PCI Multiport (4 Channels) Boards
+      - XR17C152 & XR17D152 PCI Multiport (2 Channels) Boards
+
+   This driver and installation procedure have been developed upon Linux Kernel
+   2.6.37 and tested with openSuse 11.4.
+
+   All the drivers and utilities are published in form of source code under
+   GNU General Public License in this version. Please refer to GNU General
+   Public License announcement in each source code file for more detail.
+
+   This version of driver can be installed as Loadable Module (Module driver)
+   or built-in into kernel (Static driver).
+
+   We assume the user should be familiar with following documents.
+   - Serial-HOWTO
+   - Kernel-HOWTO
+
+-----------------------------------------------------------------------------
+2. System Requirement
+   - Hardware platform: Intel x86
+   - Kernel version: 2.6.37
+   - Maximum 128 ports can be installed in combination. If you have more cards, you can support it by
+     updating "NR_PORTS" value in xr17c15x.c file.
+   - This driver has only been tested with openSuse 11.4 and it is
+     strongly recommended that the user do a complete install of all components
+     to ensure that this driver works correctly.
+
+-----------------------------------------------------------------------------
+3. Installation
+
+   3.1 Hardware installation
+      
+      You may need to adjust IRQ usage in BIOS to avoid IRQ conflict with legacy
+      ISA devices. 
+
+
+   3.2 Driver files and device naming convention
+
+       The driver file may be obtained via email. The first step, anyway, is to
+       copy driver file "xr17c15x-lnx2.6.37-pak.tar.gz" into specified
+       directory. e.g. /exar. The execute commands as below.
+
+       # cd /exar
+       # tar -zxvpf  xr17c15x-lnx2.6.37-pak.tar.gz
+    
+       You may find all the driver and utilities files in /exar/xr17c15x-lnx2.6.37-pak.
+
+       Dialin and callout port
+       -----------------------
+       This driver retains traditional serial device properties. There are
+       two special file name for each serial port.
+
+       Device naming when multiple boards are installed
+       -----------------------------------------------
+       Naming convention for each multiport board is pre-defined
+       as below, assuming 2 XR17D158 boards, 1 XR17D154 board and
+       1 XR17D152 board.
+
+       Board Num.	 Port Name
+       1st board (158)	ttyXR0  - ttyXR7
+       2nd board (158)	ttyXR8  - ttyXR15
+       3rd board (154)	ttyXR16 - ttyXR19
+       4th board (152)	ttyXR24 - ttyXR25
+
+
+   3.3 Module driver configuration
+       
+	1. Linux Kernel 2.6.37 already has built-in support for XR17C15x/XR17D15x parts. You have to disable 
+	   that support before trying to install this module. You can do that by commenting 'XR17C15[2/4/8]' definitions
+	   in pci_device_id table in 8250_pci.c in the Kernel source and recompiling the Kernel.
+
+	2. Find "Makefile" in exar/xr17c15x-lnx2.6.37-pak folder, then run
+
+	  # make
+
+          This will build the driver "xr17c15x.ko". Then run
+
+          # insmod ./xr17c15x.ko
+
+	  to insert the module driver into the Kernel. You may run "lsmod" to check
+          if "xr17c15x" is activated or not.
+
+     
+   3.4 Verify driver installation
+       
+	1. You may refer to /var/log/messages to check the latest status
+	   log reported by this driver whenever it's activated. (Make sure the hardware board is in the PCI slot.)
+	   
+	2. You can use the "minicom" application to test the ports using /dev/ttyXR'y' where 'y' is the port number.
+       
+
+4. Troubleshooting
+
+   The boot time error mesages and solutions are stated as clearly as
+   possible. If all the possible solutions fail, please contact our technical
+   support team (uarttechsupport@exar.com) to get more help.
